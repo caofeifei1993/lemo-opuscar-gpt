@@ -15,9 +15,9 @@
 </div>
 
 > [!IMPORTANT]
-> **这一版经 Claude Fable 5.2 审计和改进。**
+> **这是适配 Codex 桌面应用的分支。** 保留原作者 Lemomo (LemoLab) 的 99 种风格、制作方法和渲染工具，新增 Codex 技能入口与安装器。原演示片由上游使用 Claude 制作，未宣称已用 GPT 逐一复现。
 >
-> **本插件为 Claude 专用。** Claude Fable、Opus、Sonnet 都能用，推理强度（effort）建议选 **high**（在 Claude Code 里输入 `/effort high`）。其他模型适配度不高，请谨慎使用。
+> 在当前 Codex 应用中使用，无需单独配置 OpenAI API Key。详细操作见 [Codex 使用指南](docs/CODEX.md)。
 
 ## 🆕 最新
 
@@ -42,48 +42,35 @@
 
 ### 安装
 
-**装成 skill（推荐）。** 在终端里：
+先下载本分支，再注册到当前用户的 Codex 技能目录：
 
 ```sh
-claude plugin marketplace add lemomo-ai/lemo-opuscar
-claude plugin install lemo-opuscar@lemolab
+git clone https://github.com/caoofeifie1993/lemo-opuscar-gpt.git
+cd lemo-opuscar-gpt
+python3 tools/install_codex.py
+sh plugin/skills/lemo-opuscar/scripts/setup.sh deps
 ```
 
-之后在任何目录都能用。第一次使用时，它会把指南、工具和风格提示词下载到 `~/lemo-opuscar`，所有片子共用这一份；每支片子的工程，从源码到成片，都放在你发起时所在的文件夹里。其他 agent 可以把 [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) 复制到它们的 skills 目录。
+已下载本项目时，从 `cd` 开始即可。安装器把 `~/.agents/skills/lemo-opuscar` 链接到本地技能，因此保留这个项目目录；重复安装不会覆盖其他技能。在 Codex 中打开此项目，或在其他项目中调用 `lemo-opuscar`。如果技能列表尚未刷新，新建聊天或重启应用后再试。
 
-**或者 clone 仓库。** 片子做到仓库里的 `films/<名字>/`。
-
-```sh
-git clone https://github.com/lemomo-ai/lemo-opuscar.git
-cd lemo-opuscar
-claude
-```
+仓库内制作的影片放在 `films/<名字>/`；从其他项目调用技能时，放在当前项目的 `<名字>/`。只浏览风格不需要安装渲染依赖。
 
 ### 更新和卸载
 
-更新，然后重启 Claude Code（`~/lemo-opuscar` 里的库会在下一次做片时自动更新）：
+库不会在使用时自动更新，也不会重置本地修改。需要更新时，在已处理好本地变更的仓库中运行：
 
 ```sh
-claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@lemolab
+sh plugin/skills/lemo-opuscar/scripts/setup.sh update
+sh plugin/skills/lemo-opuscar/scripts/setup.sh deps
 ```
 
-想让它自动更新：在 Claude Code 里输入 `/plugin`，进 **Marketplaces**，选 **lemolab**，点 **Enable auto-update**（lemolab 这类第三方 marketplace 默认不自动更新，要自己打开）。
+`update` 只接受干净的 main 分支和现有 origin 的快进更新；有本地变更时会停止，先按自己的版本管理流程处理。本次适配结果默认不提交、不推送。
 
-用 clone 的：`git pull`，然后跑一次 `sh plugin/skills/lemo-opuscar/scripts/setup.sh deps`（只更新有变化的核心包；装过配音或音乐包的，改跑 `… deps voice music`）。
-
-更新后照常说要做什么片；想把风格改成自己的，看[下面](#改成你自己的风格)。
-
-卸载，然后删除 `~/lemo-opuscar`：
-
-```sh
-claude plugin uninstall lemo-opuscar@lemolab
-```
-
-你自己的风格存在 `~/lemo-my-styles/`，更新和卸载都不会删；不要了就自己删掉这个文件夹。一直卡住就[提个 issue](https://github.com/lemomo-ai/lemo-opuscar/issues)。
+卸载只需删除安装器创建的技能符号链接 `~/.agents/skills/lemo-opuscar`，不要删除项目源文件。个人风格保存在 `~/lemo-my-styles/`。完整命令与故障处理见 [Codex 使用指南](docs/CODEX.md)。
 
 ### 接下来会发生什么
 
-还没想好也没关系：装成 skill 的，输入 `/lemo-opuscar:lemo-opuscar` 直接启动。它先问你用什么语言，再问这次想做什么：用库里的风格做片、[把风格改成你自己的](#改成你自己的风格)，或者用你存过的风格。
+还没想好也没关系：装成 skill 的，直接说“使用 lemo-opuscar”。它沿用你的语言，再问这次想做什么：用库里的风格做片、[把风格改成你自己的](#改成你自己的风格)，或者用你存过的风格。
 
 它开工前只问你一次：主题里它定不了的事；你有没有自己的**配音、音乐或其他素材**；要不要先看**分镜故事板**（要看的话，它会停一次，给你看用真实风格画出来的关键镜头；不看就直接做完成片）。
 
@@ -119,7 +106,7 @@ claude plugin uninstall lemo-opuscar@lemolab
 
 > 从空白开始，做一个黑板粉笔画的风格，暖一点、慢一点。
 
-改库里的风格，它会列出全部风格和画廊链接，你打字说改哪一个。从空白开始，就用你自己的话描述想要的样子，也可以给一张喜欢的图或一支片；Claude 从库里挑一个最接近的风格当技法底子，说清楚为什么选它，你点头或者换一个。接下来五步：
+改库里的风格，它会列出全部风格和画廊链接，你打字说改哪一个。从空白开始，就用你自己的话描述想要的样子，也可以给一张喜欢的图或一支片；Codex 从库里挑一个最接近的风格当技法底子，说清楚为什么选它，你点头或者换一个。接下来五步：
 
 1. **一个问题一个问题定方案。** 拿来做什么（做什么片、发在哪个平台，竖屏就用 1080×1920 或 1080×1440；有没有品牌色、logo、字体或固定角色），想改哪里、往哪个方向改，最后起名字。改库里的风格时，它先把风格分成三组讲给你听：**放心改**（配色、字体、动作快慢、声音、标志镜头）、**一改就变味**（材质和画法、配色的逻辑、镜头语法）、**不能改**（风格的本质，改了就是另一个风格）。每个问题都带几个选项，推荐的排第一，附上理由。说得模糊也行，比如「高级一点」「活泼一点」，它会翻译成具体的改法让你挑。嫌慢就选每题最后的「自由对话」，直接聊；随时说「你定」，剩下的它按推荐填好。改库里风格时一轮最多改五处；全部用代码画，不用生图。
 2. **看汇总，点头。** 每一项改前是什么、改后是什么、代价是什么，你点头了它才写下来。
@@ -127,7 +114,7 @@ claude plugin uninstall lemo-opuscar@lemolab
 4. **一支 15–30 秒的 demo 片。** 每一处改动都在画面里出现，配音乐和音效。它自己检查、修一轮再交给你。
 5. **满意了再固化。** 它问你：固化、再改一轮，还是先不固化。你点头之前，一切都只在这次的项目文件夹里。
 
-固化以后，风格存在 `~/lemo-my-styles/<名字>/`，和库里的风格同一个结构：风格说明、改了什么、demo 片和它的源码，以后做片能接着用这些技法。之后像用库里的风格一样叫它的名字：“用我的**夜浮世绘**风格做一支 30 秒的片子，讲……”；挑风格时，你自己的风格排在最前面。库更新、重装 skill 都不会动它们；底子风格以后更新了，它会提一句，问你要不要把有用的修复同步过来。Claude 照着 [`MY-STYLES.md`](MY-STYLES.md) 一步步做。
+固化以后，风格存在 `~/lemo-my-styles/<名字>/`，和库里的风格同一个结构：风格说明、改了什么、demo 片和它的源码，以后做片能接着用这些技法。之后像用库里的风格一样叫它的名字：“用我的**夜浮世绘**风格做一支 30 秒的片子，讲……”；挑风格时，你自己的风格排在最前面。库更新、重装 skill 都不会动它们；底子风格以后更新了，它会提一句，问你要不要把有用的修复同步过来。Codex 照着 [`MY-STYLES.md`](MY-STYLES.md) 一步步做。
 
 ## 风格
 

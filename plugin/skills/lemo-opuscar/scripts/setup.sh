@@ -1,22 +1,43 @@
 #!/bin/sh
-# Lemo-Opuscar skill: find or install the style library, then print its path.
-#   sh setup.sh                    library ready? (clone on first run, update later) → which package tiers are installed, LIB=<path>
-#   sh setup.sh deps [voice] [music]
-#                                  install packages: core = Node packages, headless browser, Python core tier;
-#                                  voice = TTS and speech check (+ the English voice model); music = pluck.py (numba)
-#   sh setup.sh demo <slug>        add one style's demo source and poster to the library (reference only)
-# The library is a sparse clone of the main branch: guides, core/ tools and every STYLE.md. Big assets: tools/fetch.sh.
-# LEMO_OPUSCAR_HOME = where the library lives (default: the clone you stand in, else ~/lemo-opuscar).
+# Lemo-Opuscar for Codex: locate the library and report its readiness.
+#   sh setup.sh [check]             read-only check; does not download or update
+#   sh setup.sh install             download a missing library from the configured repository
+#   sh setup.sh update              fast-forward a clean main branch from its existing origin
+#   sh setup.sh deps [voice] [music] install the core packages and optional package tiers
+#   sh setup.sh demo <slug>          add one style's demo source (reference only)
+# LEMO_OPUSCAR_HOME overrides library discovery; LEMO_OPUSCAR_REPO is used only for installation.
 set -e
-REPO=${LEMO_OPUSCAR_REPO:-https://github.com/lemomo-ai/lemo-opuscar.git}
+REPO=${LEMO_OPUSCAR_REPO:-https://github.com/caoofeifie1993/lemo-opuscar-gpt.git}
+usage() { echo "usage: sh setup.sh [check|install|update|deps [voice] [music]|demo <slug>]"; }
+action=${1:-check}
+case "$action" in
+  check|install|update) [ "$#" -le 1 ] || { usage >&2; exit 2; } ;;
+  deps) shift; for tier in "$@"; do case "$tier" in voice|music) ;; *) usage >&2; exit 2 ;; esac; done ;;
+  demo)
+    [ "$#" -eq 2 ] || { usage >&2; exit 2; }
+    case "$2" in ''|*[!a-z0-9-]*|-*) echo "invalid style slug: $2" >&2; exit 2 ;; esac ;;
+  -h|--help) usage; exit 0 ;;
+  *) usage >&2; exit 2 ;;
+esac
 
-# 1. Which library: $LEMO_OPUSCAR_HOME, else the clone we are standing in, else ~/lemo-opuscar
+# Resolve both directory links (the Codex installer links the skill directory) and file links.
+script=$0
+while [ -L "$script" ]; do
+  script_dir=$(CDPATH= cd -P -- "$(dirname -- "$script")" && pwd)
+  target=$(readlink "$script")
+  case "$target" in /*) script=$target ;; *) script=$script_dir/$target ;; esac
+done
+script_dir=$(CDPATH= cd -P -- "$(dirname -- "$script")" && pwd)
+skill_lib=$(CDPATH= cd "$script_dir/../../../.." && pwd -P)
+
+# Explicit override > the current library > the library containing this skill > private default.
 is_lib() { [ -f "$1/AGENTS.md" ] && [ -d "$1/core/render" ]; }
 if [ -n "$LEMO_OPUSCAR_HOME" ]; then LIB=$LEMO_OPUSCAR_HOME
 elif top=$(git rev-parse --show-toplevel 2>/dev/null) && is_lib "$top"; then LIB=$top
-else LIB=$HOME/lemo-opuscar
+elif is_lib "$skill_lib"; then LIB=$skill_lib
+else LIB=$HOME/lemo-opuscar-gpt
 fi
-case "$LIB" in /*|[A-Za-z]:[/\\]*) ;; *) LIB=$(pwd)/$LIB ;; esac   # C:/… is absolute too (Windows git prints paths that way)
+case "$LIB" in /*|[A-Za-z]:[/\\]*) ;; *) LIB=$(pwd)/$LIB ;; esac
 
 # Our clone skips demo sources, the gallery, the README's pictures and big images; what `setup.sh demo` added stays.
 # git < 2.35 has no --no-cone: then the whole library is checked out.
@@ -29,20 +50,44 @@ apply_sparse() {
   sparse set --no-cone "$@" 2>/dev/null || git -C "$LIB" sparse-checkout disable || true
 }
 
-if [ "$(git -C "$LIB" config --get lemo.managed 2>/dev/null)" = true ]; then
-  # our own clone (nothing of the user's lives in it): match main, whatever happened upstream
-  [ "$(git -C "$LIB" remote get-url origin 2>/dev/null)" = "$REPO" ] || git -C "$LIB" remote set-url origin "$REPO"
-  if err=$(git -C "$LIB" fetch --quiet --depth 1 origin main 2>&1 && git -C "$LIB" reset --quiet --hard FETCH_HEAD 2>&1); then apply_sparse
-  else echo "! could not update $LIB (offline?); using the local copy. git: $err" | head -3; fi
-elif ! is_lib "$LIB"; then
-  [ -e "$LIB" ] && [ -n "$(ls -A "$LIB" 2>/dev/null)" ] && { echo "✗ $LIB exists but is not the Lemo-Opuscar library. Set LEMO_OPUSCAR_HOME to another folder."; exit 1; }
-  command -v git >/dev/null || { echo "✗ git is needed to download the library"; exit 1; }
+if ! is_lib "$LIB"; then
+  if [ "$action" != install ]; then
+    echo "✗ no library at $LIB; run this script with 'install', or set LEMO_OPUSCAR_HOME to your clone." >&2
+    exit 1
+  fi
+  if [ -e "$LIB" ] || [ -L "$LIB" ]; then
+    [ -d "$LIB" ] && [ -z "$(ls -A "$LIB")" ] || {
+      echo "✗ $LIB exists but is not an empty library folder. Choose another LEMO_OPUSCAR_HOME." >&2; exit 1;
+    }
+  fi
+  command -v git >/dev/null || { echo "✗ git is needed to download the library" >&2; exit 1; }
   echo "↓ downloading the style library into $LIB"
-  git clone --quiet --depth 1 --filter=blob:none --sparse --branch main "$REPO" "$LIB" || { rm -rf "$LIB"; echo "✗ download failed (offline?)"; exit 1; }
+  git clone --quiet --depth 1 --filter=blob:none --sparse --branch main "$REPO" "$LIB" || {
+    echo "✗ download failed; no existing files were removed. Check the network or LEMO_OPUSCAR_REPO." >&2; exit 1;
+  }
   apply_sparse
+  is_lib "$LIB" || {
+    echo "✗ downloaded repository is not a Lemo-Opuscar library; check LEMO_OPUSCAR_REPO. Files were kept at $LIB." >&2
+    exit 1
+  }
   git -C "$LIB" config lemo.managed true
 fi
-LIB=$(cd "$LIB" && pwd -P)
+LIB=$(CDPATH= cd "$LIB" && pwd -P)
+
+if [ "$action" = update ]; then
+  top=$(git -C "$LIB" rev-parse --show-toplevel 2>/dev/null) || {
+    echo "✗ update requires a Git clone" >&2; exit 1;
+  }
+  [ "$top" = "$LIB" ] || { echo "✗ the library must be the Git repository root" >&2; exit 1; }
+  [ -z "$(git -C "$LIB" status --porcelain)" ] || {
+    echo "✗ local changes found; keep them safe before updating. Nothing was changed." >&2; exit 1;
+  }
+  [ "$(git -C "$LIB" symbolic-ref --quiet --short HEAD)" = main ] || {
+    echo "✗ update only supports the main branch; update other branches manually." >&2; exit 1;
+  }
+  git -C "$LIB" fetch --quiet origin main
+  git -C "$LIB" merge --ff-only FETCH_HEAD
+fi
 
 # Installed packages are tracked by content: a marker holds a checksum of the files they came from (and the Python
 # version), so a changed package.json or requirements file triggers a reinstall.
@@ -81,16 +126,14 @@ lock_deps() {
   trap 'rm -rf "$lock"' EXIT; trap 'exit 1' INT TERM HUP
 }
 
-case "$1" in
+case "$action" in
   deps)
-    shift; tiers=core
+    tiers=core
     for t in "$@"; do case $t in voice|music) tiers="$tiers $t" ;; *) echo "usage: sh setup.sh deps [voice] [music]"; exit 1 ;; esac; done
     cd "$LIB"; lock_deps "sh setup.sh"
     command -v npm >/dev/null || { echo "✗ npm not found: install Node 20+ first"; exit 1; }
     if ! node_ok; then
       npm install --no-audit --no-fund --loglevel=error
-      # npm may rewrite package-lock.json; in our own clone put it back, so the checksum stays the same
-      [ "$(git config --get lemo.managed 2>/dev/null)" = true ] && git checkout -q -- package.json package-lock.json 2>/dev/null || true
       sig package.json package-lock.json > node_modules/.lemo-ok
     fi
     node node_modules/playwright-core/cli.js install chromium-headless-shell   # the renderer's browser (a no-op when present)

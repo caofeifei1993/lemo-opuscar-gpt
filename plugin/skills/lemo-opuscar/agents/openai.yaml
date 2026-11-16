@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lemo-Opuscar 视频制作"
+  short_description: "用 99 种视觉风格在 Codex 中编写、渲染和交付短片"
+  default_prompt: "使用 $lemo-opuscar，用水彩风格制作一支 30 秒的中文短片，介绍我的咖啡店。"

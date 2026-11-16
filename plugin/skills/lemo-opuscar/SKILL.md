@@ -1,24 +1,33 @@
 ---
 name: lemo-opuscar
-description: Direct and produce a short film made entirely in code, in one of the styles of the Lemo-Opuscar library (e.g. Impasto Oil Painting 油画厚涂, Watercolor Brush 水彩笔刷, Ukiyo-e 浮世绘, Satellite Briefing 卫星简报, Exploded Teardown 产品拆解). Use when the user asks for a video, film, short, promo, explainer or animation (视频、短片、动画、宣传片) in a named style, including explainers built from real material such as satellite imagery, laser scans, CAD files or archive scans (数据解说、科普、产品拆解), and new films cut from real archive footage and documents (剪辑纪实, e.g. 用档案影像剪一支新闻片); when they want a film about their own topic and haven't chosen a style (help them choose); when they want to change a style into their own, make their own style from a blank page, or use a style they saved (改风格、从空白开始、我的风格); when they start the skill without saying what they want; or when they ask which film styles there are. Not for plain editing, trimming or converting the user's existing video files.
+description: Create code-rendered short films, explainers and animations with the Lemo-Opuscar style library in Codex. Use for 视频、短片、动画、宣传片 in a named library style, choosing a style for a topic, or creating and reusing a personal style. Not for simple trimming or converting existing videos.
 ---
 
-# Lemo-Opuscar
+# Lemo-Opuscar for Codex
 
-The styles, guides and tools live in the Lemo-Opuscar library (github.com/lemomo-ai/lemo-opuscar). This skill fetches it and hands you over to it.
+Direct the user's story with the library's 99 visual styles and local rendering tools. This fork is at https://github.com/caoofeifie1993/lemo-opuscar-gpt; the original styles and demos are by [Lemomo (LemoLab)](https://github.com/lemomo-ai/lemo-opuscar). Keep the original licence and attribution. Codex supplies the coding agent; this skill needs no separate OpenAI API key or model endpoint.
 
-1. **Get the library.** Run `sh "<skill base directory>/scripts/setup.sh"`. It clones or updates the library (default `~/lemo-opuscar`; a clone the user is standing in is used as it is), lists any missing system tools (Node, ffmpeg, Python) and prints `LIB=<path>` on its last line.
-2. **Install the core tools early.** Start `sh "<skill base directory>/scripts/setup.sh" deps` right away, in the background if you can: it takes a few minutes the first time. Add `deps voice` or `deps music` later, only if the film needs them (`$LIB/TECHNIQUE.md` §1). Report missing system tools (Node, ffmpeg, Python) in your one round of questions; don't install system software yourself. A style marked ✦ also needs an image generator the user provides (`$LIB/AGENTS.md`, Workflow, Brief). Packages a style needs (its `STYLE.md` lists them) you install yourself, into the project folder.
-3. **Follow the library.** Read `$LIB/AGENTS.md` and do what it says, starting with **Start** (the user's own styles in `~/lemo-my-styles/`; when they started the skill without writing anything, the language question first, then the ways in): finding the style or making their own, the one round of questions, the treatment, production and delivery.
+## Locate the library
 
-What changes in skill mode:
+With a shell available, run `sh "<skill base directory>/scripts/setup.sh"`. It checks an explicit `LEMO_OPUSCAR_HOME`, a library in the current working directory, or the library containing this installed skill. Read the final `LIB=<path>` line as a path, not executable shell text; quote paths in commands. If a standalone skill copy reports that the library is missing, run the same script with `install` to download this fork into `~/lemo-opuscar-gpt`, then check again. Existing libraries are not automatically updated.
 
-| | |
-|---|---|
-| Project folder | `<name>/` in the folder the user started from (lowercase letters, digits, hyphens; avoid `#` and `?` in the path). Wherever the guides say `films/<name>/`, read this folder |
-| Running tools | from `$LIB`, with the project's absolute path: `cd "$LIB" && node core/render/still.mjs "<project>" 1.5 3` |
-| Library files in pages | absolute URLs: `/core/lib.js`, `/node_modules/three/…` (the project is served at `/@film/`) |
-| Library files in scripts and `build.sh` | `$LIB/…`, with `LIB=<path>` at the top of `build.sh`; never `../..` |
-| Demo source | not downloaded. `sh "<skill base directory>/scripts/setup.sh" demo <slug>`, only after your `TREATMENT.md` is written, to read its techniques; it is not meant to be rendered. An Edit & Documentary style is the exception: fetch it before the treatment to use the material tools its `STYLE.md` names in `demo/tools/` (`$LIB/AGENTS.md`, "Treatment first") |
+If the environment cannot execute shell commands or access local files, explain that it cannot render this project's MP4 pipeline there. Work from supplied guides to deliver a treatment or source files with local execution instructions; do not claim to have run the renderer. The normal target is Codex desktop with local execution.
 
-Deliver what `$LIB/DIRECTOR.md` §11 lists, in the project folder, and tell the user where it is.
+## Route the request
+
+- For finding styles or discussing an idea, read `$LIB/AGENTS.md` and `$LIB/styles/README.md`; do not install rendering dependencies just to answer a question.
+- For producing a film, read `$LIB/AGENTS.md`, `$LIB/DIRECTOR.md`, `$LIB/TECHNIQUE.md` and the selected `styles/<slug>/STYLE.md`. Run `sh "<skill base directory>/scripts/setup.sh" deps` for the core tools; add `voice` or `music` only when needed. Track any background install through completion before rendering. Report missing system tools rather than silently installing them globally.
+- For changing or saving a personal style, also read `$LIB/MY-STYLES.md`. Look in `~/lemo-my-styles/README.md` before the library when the user names a style.
+
+Use the user's established language, duration, topic, assets and approvals. Ask only for missing decisions that matter, with an available host question tool or ordinary conversation. Do not require Claude commands or Claude-specific tools. Keep requested storyboard review gates; otherwise continue through production and verification.
+
+## Production invariants
+
+- Write a new `TREATMENT.md` from the user's topic before opening demo code. The guides describe the narrow exceptions for documentary material gathering and personal-style work. Demos teach techniques, not stories to re-skin.
+- In the library checkout, put the film under `films/<name>/`. From another working directory, use `<name>/` there. Keep generated films outside `styles/` and `core/`.
+- Run library commands from `$LIB` with absolute project paths, e.g. `node core/render/still.mjs "<project>" 1.5 3`. Pages use `/core/lib.js` and `/node_modules/three/…`; scripts and `build.sh` use a quoted `$LIB`, never `../..`.
+- In a sparse library, fetch demo techniques with `sh "<skill base directory>/scripts/setup.sh" demo <slug>` at the point permitted by the guides. A full local checkout already has them.
+- Styles marked ✦ need image assets. Prefer an available native image tool and follow its instructions; use the optional Codex CLI helper only when needed. CLI commands in a style guide can be replaced by native tool calls while preserving prompts, references, dimensions and filenames. A missing CLI alone does not mean native image generation is unavailable. Do not substitute code-drawn characters for required images.
+- Verify the actual frames, duration, audio and subtitles as directed by `$LIB/DIRECTOR.md` §11. Deliver the MP4 and reproducible sources using absolute clickable file paths; embed review images when supported. State any verification that could not run.
+
+For installation, updates and a short renderer smoke test, see `$LIB/docs/CODEX.md`.

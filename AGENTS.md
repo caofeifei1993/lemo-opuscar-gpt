@@ -1,5 +1,7 @@
 # Lemo-Opuscar: instructions for agents
 
+This fork is adapted for Codex desktop. The film workflow below applies to film requests; for repository maintenance, follow the user's development task instead. See [`docs/CODEX.md`](docs/CODEX.md) for installation and verification. No separate OpenAI API key is needed: Codex writes the code and local tools render it.
+
 This repository is a library of film styles. Each style has a `styles/<slug>/STYLE.md` (what the style is) and one demo film made entirely in code (`DEMO.md` and `demo/`). People pick a style and ask for a film about **their own** topic. Your job is to direct and produce that film.
 
 | The request | Go to |
@@ -18,8 +20,9 @@ This repository is a library of film styles. Each style has a `styles/<slug>/STY
 ## Start
 
 - **Their own styles first.** If `~/lemo-my-styles/README.md` exists, read it: it lists every style the user has saved, wherever it's kept, and their own styles ([`MY-STYLES.md`](MY-STYLES.md)) count like library styles. When they name a style, look there first, then in the library.
-- **Their language.** Talk to them in the language they write in. When they started the skill without writing anything, your first question is always the language, even when their settings, memory or earlier messages suggest one: the `AskUserQuestion` tool, a question of its own headed "Language 语言" with two options, 中文 and English (the tool adds Other, where they type any other language). Use it from then on, and as the film's default language.
-- **No request yet** (they only started the skill, or said hello): offer the ways in with one question, using the `AskUserQuestion` tool, in their language, with the first as the recommended one:
+- **Their language.** Use the language of the user's request or their established preference, including for the film. Ask only when neither is known.
+- **Questions in Codex.** Use the host's available question tool in the modes where it is supported, or ask in plain conversation. Do not call Claude-specific tools. Reuse information and authorization already given; optional preferences can use the documented defaults. If an essential fact is missing, wait for that answer before the dependent work.
+- **No request yet** (they only started the skill, or said hello): offer the ways in with one question in their language, with the first as the recommended one:
   1. a film in a library style (**Finding the style**);
   2. change a library style and keep it as their own ([`MY-STYLES.md`](MY-STYLES.md));
   3. make their own style from a blank page ([`MY-STYLES.md`](MY-STYLES.md));
@@ -42,9 +45,9 @@ Users name a style by its gallery name in English or Chinese ("Impasto Oil Paint
 If the user hasn't picked a style:
 - Suggest two or three that fit their topic.
 - If they have their own styles, list those first, under "My styles" (in their language).
-- Show them the full list below in the chat, in the user's language only: English names (and English category names) for someone writing in English, Chinese names for someone writing in Chinese. Don't drop, merge or rename anything.
+- For a request limited to a topic or category (for example, styles suitable for science explainers), show the matching recommendations. Show the full list below when they request all styles or are browsing without a narrower scope. Use the user's language: English names and categories for English, Chinese names for Chinese. Keep the original style names.
 - Link the gallery, where every style has its demo film: https://lemomo-ai.github.io/lemo-opuscar/
-- Then ask them to type the name. The list goes in your own message (a command's output isn't shown to them), and the question is plain text, not `AskUserQuestion`: its few options would hide the rest of the list.
+- Then ask them to type the name. The list goes in your own message (a command's output isn't shown to them), and the question allows free text so the choices don't hide the rest of the list.
 
 <!-- style-list:start -->
 All 99 styles · 全部风格:
@@ -65,7 +68,7 @@ All 99 styles · 全部风格:
 - **仪器实证 Instruments & Evidence** (8): 卫星简报 Satellite Briefing, 工程简报板 Engineering Briefing Board, 点云测绘 LiDAR Survey, 显微镜下 Under the Microscope, 档案看片台 Archive Light Table, 安检 X 光 Security X-ray, 雷达扫描纪录片 Radar Sweep Documentary, 热成像 Thermal Camera
 - **数据地图 Data & Maps** (6): 数据叙事 Data Storytelling, 白模投影 Projection-Mapped Model, 数据实物化 Data Physicalization, 地铁线路图 Transit Map, 立体地图解说 3D Map Explainer, 小人模拟实验 Blob Simulation
 
-✦ draws with an image generator: the user's Codex CLI, or another image tool they have. Without one the film cannot start (core/README.md, "Image generation"). Say so when you suggest the style.
+✦ draws with an image generator: an available native image tool, the user's Codex CLI, or another image tool they have. Without one the film cannot start (core/README.md, "Image generation"). Say so when you suggest the style.
 <!-- style-list:end -->
 
 ## Workflow
@@ -76,11 +79,13 @@ All 99 styles · 全部风格:
    - the film's language, if it isn't obvious (default: the language they write in or chose, for voice and subtitles);
    - whether they want to review a storyboard first (default: no);
    - anything missing on their machine: before you ask, run `sh plugin/skills/lemo-opuscar/scripts/setup.sh` from the library root (no arguments: it takes seconds and lists every missing system tool at once) and include what it reports. Start `… setup.sh deps` (core only) in the background, if it isn't already running: it takes a few minutes the first time. Add the voice and music tiers later, only if the film needs them (TECHNIQUE.md §1);
-   - for a style marked ✦, how they will make the images, but only when the image check below fails.
+   - for a style marked ✦, how they will make the images, but only when no usable image tool is available.
 
-   **A style marked ✦ draws with an image generator** (its `style.json` says `"needs": ["image-generation"]`). Run `python3 core/image/gen_image.py --check` from the library root before you write the questions, next to `setup.sh`. If it fails, put its reason and the question in the same message: what will they make the images with instead (another image API or app, or their own drawings; you give them the prompts and the file names)? With no image generator at all, tell them plainly that a film in this style can't start, and offer two or three other styles that fit their topic. Never draw the characters in code as a stand-in.
+   **A style marked ✦ draws with an image generator** (its `style.json` says `"needs": ["image-generation"]`). Prefer an image tool already available in the current Codex session, following its skill and saving usable image assets into the project. If none is available, run `python3 core/image/gen_image.py --check` from the library root to check the optional CLI route. A missing CLI does not block a working native image tool. If neither works, ask which other image tool or supplied drawings to use. With no image generator or supplied drawings, offer two or three other styles; never draw the characters in code as a stand-in.
 
-   Skip what their request already answers. Wait for the reply, fill every other gap with a sensible default, sum up the brief in a few lines and start. Don't come back with more questions.
+   CLI image commands in a `STYLE.md` describe one way to obtain assets, not a required transport. A native image tool can replace that call while preserving the style's prompts, reference consistency, image dimensions, expected filenames and visual requirements.
+
+   Skip what their request already answers. Ask only for information needed to proceed; otherwise state sensible defaults, sum up the brief in a few lines and start. Wait for required answers, but do not insert an extra approval gate when the user already authorized the film. Don't come back with redundant questions.
 2. **Treatment.** Write `TREATMENT.md` in the project folder (DIRECTOR.md §4), before you open the demo (an Edit & Documentary style gathers its material first: **Treatment first** above).
 3. **Look.** Render style frames or a model sheet with the real drawing code and check them against `STYLE.md` (DIRECTOR.md §5).
 4. **Storyboard, only if the user asked for it** (DIRECTOR.md §5). **Stop and wait for approval.** Otherwise don't stop.
@@ -88,6 +93,8 @@ All 99 styles · 全部风格:
 6. **Self-check and deliver** (DIRECTOR.md §11).
 
 Report progress in the user's language. If a step fails, read the error, fix the cause and retry; go back to the user only for a decision or something only they can provide.
+
+In Codex, show review frames with Markdown image embeds using absolute local paths. Link the finished MP4 and source folder using absolute paths. Claim a successful render only after inspecting the actual output and running its checks; a written script is not a finished film.
 
 ## Where things go
 

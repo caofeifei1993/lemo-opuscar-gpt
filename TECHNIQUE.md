@@ -28,7 +28,7 @@ Everything else installs in tiers, from the library root (`$LIB` in skill mode).
 
 Some styles need packages of their own (a LiDAR reader, a slide-scan decoder, a CAD importer); the style's `STYLE.md` lists them. They are packages, not system tools: install them yourself into a private venv or `node_modules` in the project folder, never into `$LIB/.venv`.
 
-The styles marked ✦ also draw with an image generator, which the library doesn't include and you don't install: the user's own Codex CLI, signed in (`core/image/gen_image.py`), or another image tool they have. Their prompts go to that service (core/README.md, "Image generation").
+The styles marked ✦ also draw with an image generator, which the library doesn't include and you don't install: an available native Codex image tool (preferred), the optional signed-in Codex CLI helper (`core/image/gen_image.py`), or another image tool they have. Their prompts go to that service (core/README.md, "Image generation").
 
 A synthesized score needs no big download. A sampled one needs the libraries its instruments live in: `sampler.py` downloads the missing ones itself, all at once, when the score is rendered (`LEMO_FETCH=0` turns that off and prints the `fetch.sh` commands instead). Put `"$LIB/.venv/bin/python" core/audio/sampler.py --need <your mix.py>` at the top of a `build.sh`, so they arrive before the long picture render, not after it. A pack needs about twice its size free while it unpacks. Downloads come from npm, PyPI, GitHub Releases and Hugging Face (`HF_ENDPOINT` sets a mirror).
 

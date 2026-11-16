@@ -6,7 +6,9 @@ Command reference for `core/` and `tools/`. How the pieces fit together is in [`
 
 | Command | What it does |
 |---|---|
-| `sh plugin/skills/lemo-opuscar/scripts/setup.sh` | find, clone or update the library; prints `LIB=<path>` |
+| `sh plugin/skills/lemo-opuscar/scripts/setup.sh [check]` | locate the library and report readiness without downloading or updating; prints `LIB=<path>` |
+| `… setup.sh install` | download this fork when the library is missing; preserve existing libraries |
+| `… setup.sh update` | fast-forward a clean main branch from its existing origin; refuse local changes or divergence |
 | `… setup.sh deps` | core tier: npm packages, headless browser, `.venv` from `requirements.txt` |
 | `… setup.sh deps voice` | adds `requirements-voice.txt` (kokoro-onnx, edge-tts, faster-whisper) and the Kokoro model |
 | `… setup.sh deps music` | adds `requirements-music.txt` (numba, for `pluck.py`; `sampler.py` needs only the core) |
@@ -74,7 +76,8 @@ The styles marked ✦ in the style list (`"needs": ["image-generation"]` in thei
 | `python3 core/image/gen_image.py --check` | is the Codex CLI installed and signed in? Exit 0 if so, 4 if not, with a different message for "not installed" and "not signed in". The first real image confirms that the account can generate images |
 | `python3 core/image/gen_image.py "<prompt>" --aspect 16:9 --out "<project>/gen" --name <base> [--ref <image> …] [--edit]` | one image through `codex exec` (read-only sandbox, its built-in `image_gen`) → `<project>/gen/<base>_<date-time>.png`, path printed. `--ref` attaches a reference sheet (repeatable); `--edit` changes the first `--ref` and keeps the rest of it. A wrong aspect is retried, then kept as `…_wrongaspect.png`. Exit 2 no image, 3 wrong aspect, 4 setup (no Codex, a missing reference, a bad argument) |
 
-- **Codex CLI**: installed, and signed in (`codex login`) to an account that can generate images. A failed generation prints Codex's own error (no credits, no access).
+- **Native Codex image tool**: prefer an image tool already available in the current session, following its skill. Save the generated assets under the names the style expects. The CLI check below is not required for this route.
+- **Codex CLI (optional fallback)**: installed, and signed in (`codex login`) to an account that can generate images. A failed generation prints Codex's own error (no credits, no access).
 - **Another image tool** (an image API or app, or the user's own drawings): the style's `STYLE.md` gives the prompts, sizes and file names; the user makes the images there and saves them under those names.
 - **Neither**: a film in that style cannot start. Say so in the brief and offer other styles that fit the topic; never draw stand-in characters in code.
 - Prompts and reference images go to the image service the user chose. Before generating, tell the user how many images and of what.
@@ -83,7 +86,8 @@ The styles marked ✦ in the style list (`"needs": ["image-generation"]` in thei
 
 | Variable | Meaning |
 |---|---|
-| `LEMO_OPUSCAR_HOME` | where `setup.sh` keeps the library (default `~/lemo-opuscar`) |
+| `LEMO_OPUSCAR_HOME` | explicit library path; otherwise use the current/skill checkout, then `~/lemo-opuscar-gpt` |
+| `LEMO_OPUSCAR_REPO` | repository used only for a new library install (default this Codex fork); does not replace an existing origin |
 | `PLAYWRIGHT_CHROME` | a Chrome / headless-shell executable instead of Playwright's |
 | `LEMO_ANGLE` | WebGL backend (default `metal` on macOS; `default` passes none). A virtualised adapter (most cloud VMs and CI runners) creates the demo's context and then drops it, so WebGL styles draw nothing: `LEMO_ANGLE=swiftshader` asks for software rendering up front and renders them, slowly |
 | `RENDER_SLOTS` | optional; limits concurrent full renders across processes |

@@ -17,9 +17,9 @@
 </div>
 
 > [!IMPORTANT]
-> **This release was audited and improved with Claude Fable 5.2.**
+> **This fork is adapted for Codex desktop.** It preserves Lemomo (LemoLab)'s 99 styles, production guides and rendering tools, and adds Codex skill metadata and an installer. The original demos were made upstream with Claude; they have not all been reproduced with GPT.
 >
-> **Built for Claude.** Claude Fable, Opus and Sonnet all work; set effort to **high** (in Claude Code, type `/effort high`). Other models may not reproduce the styles well, so use them with care.
+> Use your existing Codex session; no separate OpenAI API key is required. See the [Codex guide](docs/CODEX.md).
 
 ## 🆕 New
 
@@ -44,48 +44,35 @@ Name the style in English or Chinese, or by its folder; the [style index](styles
 
 ### Install
 
-**The skill (recommended).** In your terminal:
+Clone this fork and register the skill for the current Codex user:
 
 ```sh
-claude plugin marketplace add lemomo-ai/lemo-opuscar
-claude plugin install lemo-opuscar@lemolab
+git clone https://github.com/caoofeifie1993/lemo-opuscar-gpt.git
+cd lemo-opuscar-gpt
+python3 tools/install_codex.py
+sh plugin/skills/lemo-opuscar/scripts/setup.sh deps
 ```
 
-Then use it from any folder. On first use it downloads the guides, tools and style prompts to `~/lemo-opuscar`, shared by all your films; each film's project, from source to finished video, goes in the folder you started from. For other agents, copy [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) into their skills folder.
+If the project is already downloaded, start with `cd`. The installer links `~/.agents/skills/lemo-opuscar` to this checkout, so keep the checkout in place. Repeating installation is safe and never overwrites a different skill. Open this folder in Codex or invoke `lemo-opuscar` from another project. If it is not visible yet, start a new chat or restart the app.
 
-**Or clone the repo.** Films go into `films/<name>/` inside it.
-
-```sh
-git clone https://github.com/lemomo-ai/lemo-opuscar.git
-cd lemo-opuscar
-claude
-```
+Films made in the checkout go under `films/<name>/`; from another project, they go under `<name>/` there. Browsing styles does not require rendering dependencies.
 
 ### Update or uninstall
 
-Update, then restart Claude Code (the library in `~/lemo-opuscar` updates itself on the next film):
+The library does not update itself or reset local changes. When you want to update a clean checkout:
 
 ```sh
-claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@lemolab
+sh plugin/skills/lemo-opuscar/scripts/setup.sh update
+sh plugin/skills/lemo-opuscar/scripts/setup.sh deps
 ```
 
-To have it update by itself: in Claude Code, type `/plugin`, open **Marketplaces**, pick **lemolab** and choose **Enable auto-update** (third-party marketplaces such as lemolab don't update automatically until you turn this on).
+`update` requires a clean main branch and only fast-forwards from the existing origin. Resolve local changes through your own version-control workflow first. This adaptation does not commit or push automatically.
 
-From a clone: `git pull`, then run `sh plugin/skills/lemo-opuscar/scripts/setup.sh deps` once (it updates only the core packages that changed; if you installed the voice or music packages, run `… deps voice music` instead).
-
-After an update, ask for a film as usual; to make a style your own, see [below](#make-a-style-your-own).
-
-Uninstall, then delete `~/lemo-opuscar`:
-
-```sh
-claude plugin uninstall lemo-opuscar@lemolab
-```
-
-Your own styles in `~/lemo-my-styles/` stay through updates and uninstalls; delete that folder yourself if you don't want them. If a step stays stuck, [open an issue](https://github.com/lemomo-ai/lemo-opuscar/issues).
+Uninstall by removing only the skill symlink created at `~/.agents/skills/lemo-opuscar`. Keep the checkout and films as needed. Personal styles stay in `~/lemo-my-styles/`. See the [Codex guide](docs/CODEX.md) for details.
 
 ### What happens next
 
-Not sure yet? With the skill installed, type `/lemo-opuscar:lemo-opuscar` and nothing else. It asks which language to use, then what you'd like to do: a film in a library style, [make a style your own](#make-a-style-your-own), or a film in a style you've saved.
+Not sure yet? With the skill installed, say “Use lemo-opuscar”. It uses your established language and asks what you'd like to do: a film in a library style, [make a style your own](#make-a-style-your-own), or a film in a style you've saved.
 
 It asks you once, up front: anything it can't decide about your topic; whether you have your own **voice, music or other material**; whether you want to see a **storyboard** first (say yes and it stops once to show you the key shots in the real style; otherwise it goes straight to the finished film).
 
@@ -121,7 +108,7 @@ Pick it after starting the skill, or say it in one line:
 
 > Start from a blank page: a chalk-on-blackboard style, warm and slow.
 
-To change a library style, it lists every style with the gallery link and you type the one to change. From a blank page, describe the look in your own words, or share a picture or a film you like; Claude picks the closest library style as the technique base, tells you why, and you agree or pick another. Then five steps:
+To change a library style, it lists every style with the gallery link and you type the one to change. From a blank page, describe the look in your own words, or share a picture or a film you like; Codex picks the closest library style as the technique base, tells you why, and you agree or pick another. Then five steps:
 
 1. **Plan it one question at a time.** What it's for (kinds of film; the platform, as vertical feeds want 1080×1920 or 1080×1440; brand colours, logo, fonts or recurring characters), what to change and which way, and last, a name. A library style is first sorted into **safe to change** (palette, type, pace, sound, signature moves), **changes its character** (materials and rendering, the colour logic, camera grammar) and **can't change** (the style's essence: change that and it's a different style). Each question has a few options, the recommended one first with the reason. Vague is fine: "more premium" or "livelier" becomes concrete changes to pick from. Choose "free conversation" to just talk it through, or say "you decide" at any point. At most five changes a round when changing a library style; everything is drawn in code, no image generation.
 2. **Review the summary**: each part before, after and what it costs. Nothing is written until you agree.
@@ -129,7 +116,7 @@ To change a library style, it lists every style with the gallery link and you ty
 4. **A 15–30 second demo film**, every change on screen, with music and sound effects. It checks the film and fixes it once before handing it over.
 5. **Keep it when you're happy**: keep it as my style, another round, or not now. Until you say yes, everything stays in that project's folder.
 
-A kept style lives in `~/lemo-my-styles/<name>/`, shaped like a library style (the style prompt, what changed, the demo film and its source), so later films can reuse the techniques. Name it like any other style: *"Make a 30-second film in my **Night Ukiyo-e** style about…"*; when you pick a style, your own are listed first. Library updates and reinstalling never touch them; when the base style is updated later, Claude mentions it once and asks whether to bring the useful fixes into your copy. The steps Claude follows are in [`MY-STYLES.md`](MY-STYLES.md).
+A kept style lives in `~/lemo-my-styles/<name>/`, shaped like a library style (the style prompt, what changed, the demo film and its source), so later films can reuse the techniques. Name it like any other style: *"Make a 30-second film in my **Night Ukiyo-e** style about…"*; when you pick a style, your own are listed first. Library updates and reinstalling never touch them; when the base style is updated later, Codex mentions it once and asks whether to bring the useful fixes into your copy. The steps Codex follows are in [`MY-STYLES.md`](MY-STYLES.md).
 
 ## The styles
 
