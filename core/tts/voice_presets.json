@@ -1,0 +1,571 @@
+{
+  "schema_version": 1,
+  "backend": "edge",
+  "default": "zh-warm-female",
+  "checked_at": "2026-11-19",
+  "source": "https://github.com/rany2/edge-tts",
+  "note": "预设是基础音色与语速、音高的组合；名称描述选角方向，不代表可控制的情绪或 SSML 风格。同一基础音色可出现在多个预设中。在线服务的音色列表可能变化。",
+  "presets": [
+    {
+      "id": "zh-warm-female",
+      "name": "温柔讲书女声",
+      "voice": "zh-CN-XiaoxiaoNeural",
+      "locale": "zh-CN",
+      "gender": "Female",
+      "rate": "-15%",
+      "pitch": "-1Hz",
+      "description": "晓晓的慢速讲书预设，适合缓慢温柔的书籍解读和故事旁白。",
+      "tags": [
+        "普通话",
+        "女声",
+        "讲书",
+        "温柔",
+        "慢速"
+      ],
+      "sample_text": "你好，这是语音试听。让文字拥有声音，让故事更有温度。"
+    },
+    {
+      "id": "zh-standard-female",
+      "name": "标准解说女声",
+      "voice": "zh-CN-XiaoxiaoNeural",
+      "locale": "zh-CN",
+      "gender": "Female",
+      "rate": "+0%",
+      "pitch": "+0Hz",
+      "description": "晓晓的原速预设，适合知识讲解、产品介绍与通用旁白。",
+      "tags": [
+        "普通话",
+        "女声",
+        "标准",
+        "解说"
+      ],
+      "sample_text": "你好，这是语音试听。让文字拥有声音，让故事更有温度。"
+    },
+    {
+      "id": "zh-lively-female",
+      "name": "活力解说女声",
+      "voice": "zh-CN-XiaoyiNeural",
+      "locale": "zh-CN",
+      "gender": "Female",
+      "rate": "+8%",
+      "pitch": "+0Hz",
+      "description": "晓伊的稍快预设，适合轻快短片、日常分享和动画解说。",
+      "tags": [
+        "普通话",
+        "女声",
+        "活力",
+        "短视频"
+      ],
+      "sample_text": "你好，这是语音试听。让文字拥有声音，让故事更有温度。"
+    },
+    {
+      "id": "zh-story-female",
+      "name": "轻柔童话女声",
+      "voice": "zh-CN-XiaoyiNeural",
+      "locale": "zh-CN",
+      "gender": "Female",
+      "rate": "-8%",
+      "pitch": "+0Hz",
+      "description": "晓伊的稍慢预设，给童话和角色对白留出更舒展的节奏。",
+      "tags": [
+        "普通话",
+        "女声",
+        "童话",
+        "慢速"
+      ],
+      "sample_text": "你好，这是语音试听。让文字拥有声音，让故事更有温度。"
+    },
+    {
+      "id": "zh-youth-male",
+      "name": "青年叙事男声",
+      "voice": "zh-CN-YunxiNeural",
+      "locale": "zh-CN",
+      "gender": "Male",
+      "rate": "+0%",
+      "pitch": "+0Hz",
+      "description": "云希的原速预设，适合故事叙述、旅行记录和青年角色。",
+      "tags": [
+        "普通话",
+        "男声",
+        "青年",
+        "故事"
+      ],
+      "sample_text": "你好，这是语音试听。让文字拥有声音，让故事更有温度。"
+    },
+    {
+      "id": "zh-explainer-male",
+      "name": "活力科普男声",
+      "voice": "zh-CN-YunxiNeural",
+      "locale": "zh-CN",
+      "gender": "Male",
+      "rate": "+8%",
+      "pitch": "+0Hz",
+      "description": "云希的稍快预设，适合节奏明快的科普和短视频解说。",
+      "tags": [
+        "普通话",
+        "男声",
+        "活力",
+        "科普"
+      ],
+      "sample_text": "你好，这是语音试听。让文字拥有声音，让故事更有温度。"
+    },
+    {
+      "id": "zh-documentary-male",
+      "name": "沉稳纪录片男声",
+      "voice": "zh-CN-YunyangNeural",
+      "locale": "zh-CN",
+      "gender": "Male",
+      "rate": "-10%",
+      "pitch": "-2Hz",
+      "description": "云扬的慢速低音高预设，适合纪录片、历史和沉静叙事。",
+      "tags": [
+        "普通话",
+        "男声",
+        "纪录片",
+        "沉稳",
+        "慢速"
+      ],
+      "sample_text": "你好，这是语音试听。让文字拥有声音，让故事更有温度。"
+    },
+    {
+      "id": "zh-news-male",
+      "name": "标准播报男声",
+      "voice": "zh-CN-YunyangNeural",
+      "locale": "zh-CN",
+      "gender": "Male",
+      "rate": "+0%",
+      "pitch": "+0Hz",
+      "description": "云扬的原速预设，适合新闻式信息播报和结构清晰的介绍。",
+      "tags": [
+        "普通话",
+        "男声",
+        "播报",
+        "标准"
+      ],
+      "sample_text": "你好，这是语音试听。让文字拥有声音，让故事更有温度。"
+    },
+    {
+      "id": "zh-dramatic-male",
+      "name": "有力叙事男声",
+      "voice": "zh-CN-YunjianNeural",
+      "locale": "zh-CN",
+      "gender": "Male",
+      "rate": "-3%",
+      "pitch": "-2Hz",
+      "description": "云健的稍慢低音高预设，供史诗叙事、赛事介绍和预告片选角。",
+      "tags": [
+        "普通话",
+        "男声",
+        "有力",
+        "叙事"
+      ],
+      "sample_text": "你好，这是语音试听。让文字拥有声音，让故事更有温度。"
+    },
+    {
+      "id": "zh-child-male",
+      "name": "童话少年男声",
+      "voice": "zh-CN-YunxiaNeural",
+      "locale": "zh-CN",
+      "gender": "Male",
+      "rate": "-5%",
+      "pitch": "+0Hz",
+      "description": "云夏在服务目录中标为男声；此稍慢预设适合童话和少年角色试音。",
+      "tags": [
+        "普通话",
+        "男声",
+        "童声",
+        "少年",
+        "童话"
+      ],
+      "sample_text": "你好，这是语音试听。让文字拥有声音，让故事更有温度。"
+    },
+    {
+      "id": "zh-northeast-female",
+      "name": "东北口音女声",
+      "voice": "zh-CN-liaoning-XiaobeiNeural",
+      "locale": "zh-CN-liaoning",
+      "gender": "Female",
+      "rate": "+0%",
+      "pitch": "+0Hz",
+      "description": "晓北的东北官话音色，适合地方故事和生活化对白。",
+      "tags": [
+        "中文",
+        "女声",
+        "方言",
+        "东北"
+      ],
+      "sample_text": "你好，这是语音试听。让文字拥有声音，让故事更有温度。"
+    },
+    {
+      "id": "zh-shaanxi-female",
+      "name": "陕西口音女声",
+      "voice": "zh-CN-shaanxi-XiaoniNeural",
+      "locale": "zh-CN-shaanxi",
+      "gender": "Female",
+      "rate": "+0%",
+      "pitch": "+0Hz",
+      "description": "晓妮的陕西中原官话音色，适合地方题材和人物对白。",
+      "tags": [
+        "中文",
+        "女声",
+        "方言",
+        "陕西"
+      ],
+      "sample_text": "你好，这是语音试听。让文字拥有声音，让故事更有温度。"
+    },
+    {
+      "id": "yue-warm-female",
+      "name": "粤语亲切女声",
+      "voice": "zh-HK-HiuMaanNeural",
+      "locale": "zh-HK",
+      "gender": "Female",
+      "rate": "-5%",
+      "pitch": "+0Hz",
+      "description": "HiuMaan 的稍慢粤语预设，适合亲切解说与生活故事；文案应使用粤语表达。",
+      "tags": [
+        "粤语",
+        "女声",
+        "亲切",
+        "故事"
+      ],
+      "sample_text": "你好，呢段係語音試聽。清楚自然嘅聲音，令每個故事都更有溫度。"
+    },
+    {
+      "id": "yue-bright-female",
+      "name": "粤语轻快女声",
+      "voice": "zh-HK-HiuGaaiNeural",
+      "locale": "zh-HK",
+      "gender": "Female",
+      "rate": "+3%",
+      "pitch": "+0Hz",
+      "description": "HiuGaai 的稍快粤语预设，适合轻快介绍和短片旁白；文案应使用粤语表达。",
+      "tags": [
+        "粤语",
+        "女声",
+        "轻快",
+        "短视频"
+      ],
+      "sample_text": "你好，呢段係語音試聽。清楚自然嘅聲音，令每個故事都更有溫度。"
+    },
+    {
+      "id": "yue-story-male",
+      "name": "粤语讲述男声",
+      "voice": "zh-HK-WanLungNeural",
+      "locale": "zh-HK",
+      "gender": "Male",
+      "rate": "-8%",
+      "pitch": "+0Hz",
+      "description": "WanLung 的稍慢粤语预设，适合故事讲述与纪录片旁白；文案应使用粤语表达。",
+      "tags": [
+        "粤语",
+        "男声",
+        "故事",
+        "慢速"
+      ],
+      "sample_text": "你好，呢段係語音試聽。清楚自然嘅聲音，令每個故事都更有溫度。"
+    },
+    {
+      "id": "zh-tw-warm-female",
+      "name": "台湾国语女声",
+      "voice": "zh-TW-HsiaoChenNeural",
+      "locale": "zh-TW",
+      "gender": "Female",
+      "rate": "-5%",
+      "pitch": "+0Hz",
+      "description": "HsiaoChen 的稍慢台湾国语预设，适合通用解说和亲切旁白。",
+      "tags": [
+        "台湾国语",
+        "女声",
+        "亲切",
+        "解说"
+      ],
+      "sample_text": "你好，這是語音試聽。讓文字擁有聲音，讓故事更有溫度。"
+    },
+    {
+      "id": "zh-tw-soft-female",
+      "name": "台湾国语慢叙女声",
+      "voice": "zh-TW-HsiaoYuNeural",
+      "locale": "zh-TW",
+      "gender": "Female",
+      "rate": "-8%",
+      "pitch": "+0Hz",
+      "description": "HsiaoYu 的稍慢台湾国语预设，供绘本、讲书和生活故事选角。",
+      "tags": [
+        "台湾国语",
+        "女声",
+        "讲书",
+        "慢速"
+      ],
+      "sample_text": "你好，這是語音試聽。讓文字擁有聲音，讓故事更有溫度。"
+    },
+    {
+      "id": "zh-tw-male",
+      "name": "台湾国语男声",
+      "voice": "zh-TW-YunJheNeural",
+      "locale": "zh-TW",
+      "gender": "Male",
+      "rate": "-3%",
+      "pitch": "+0Hz",
+      "description": "YunJhe 的稍慢台湾国语预设，适合人物讲述和通用旁白。",
+      "tags": [
+        "台湾国语",
+        "男声",
+        "故事",
+        "解说"
+      ],
+      "sample_text": "你好，這是語音試聽。讓文字擁有聲音，讓故事更有溫度。"
+    },
+    {
+      "id": "en-us-female",
+      "name": "美式英语女声",
+      "voice": "en-US-JennyNeural",
+      "locale": "en-US",
+      "gender": "Female",
+      "rate": "-5%",
+      "pitch": "+0Hz",
+      "description": "Jenny 的稍慢美式英语预设，适合英语讲解和温和叙事。",
+      "tags": [
+        "英语",
+        "美式",
+        "女声",
+        "解说"
+      ],
+      "sample_text": "Hello, this is a voice sample. Clear words and a natural rhythm bring every story to life."
+    },
+    {
+      "id": "en-us-male",
+      "name": "美式英语男声",
+      "voice": "en-US-GuyNeural",
+      "locale": "en-US",
+      "gender": "Male",
+      "rate": "-5%",
+      "pitch": "+0Hz",
+      "description": "Guy 的稍慢美式英语预设，适合英语旁白和故事讲述。",
+      "tags": [
+        "英语",
+        "美式",
+        "男声",
+        "故事"
+      ],
+      "sample_text": "Hello, this is a voice sample. Clear words and a natural rhythm bring every story to life."
+    },
+    {
+      "id": "en-gb-female",
+      "name": "英式英语女声",
+      "voice": "en-GB-SoniaNeural",
+      "locale": "en-GB",
+      "gender": "Female",
+      "rate": "-5%",
+      "pitch": "+0Hz",
+      "description": "Sonia 的稍慢英式英语预设，适合英语讲书和知识讲解。",
+      "tags": [
+        "英语",
+        "英式",
+        "女声",
+        "讲书"
+      ],
+      "sample_text": "Hello, this is a voice sample. Clear words and a natural rhythm bring every story to life."
+    },
+    {
+      "id": "en-gb-male",
+      "name": "英式英语男声",
+      "voice": "en-GB-RyanNeural",
+      "locale": "en-GB",
+      "gender": "Male",
+      "rate": "-5%",
+      "pitch": "+0Hz",
+      "description": "Ryan 的稍慢英式英语预设，适合英语叙事和纪录片解说。",
+      "tags": [
+        "英语",
+        "英式",
+        "男声",
+        "纪录片"
+      ],
+      "sample_text": "Hello, this is a voice sample. Clear words and a natural rhythm bring every story to life."
+    },
+    {
+      "id": "ja-female",
+      "name": "日语女声",
+      "voice": "ja-JP-NanamiNeural",
+      "locale": "ja-JP",
+      "gender": "Female",
+      "rate": "-5%",
+      "pitch": "+0Hz",
+      "description": "Nanami 的稍慢日语预设，适合日语故事和通用旁白。",
+      "tags": [
+        "日语",
+        "女声",
+        "故事"
+      ],
+      "sample_text": "こんにちは。これは音声サンプルです。自然な声と心地よいリズムで、物語を届けます。"
+    },
+    {
+      "id": "ja-male",
+      "name": "日语男声",
+      "voice": "ja-JP-KeitaNeural",
+      "locale": "ja-JP",
+      "gender": "Male",
+      "rate": "-5%",
+      "pitch": "+0Hz",
+      "description": "Keita 的稍慢日语预设，适合日语解说和人物讲述。",
+      "tags": [
+        "日语",
+        "男声",
+        "解说"
+      ],
+      "sample_text": "こんにちは。これは音声サンプルです。自然な声と心地よいリズムで、物語を届けます。"
+    },
+    {
+      "id": "zh-sports-sprint-male",
+      "name": "冲线解说男声",
+      "voice": "zh-CN-YunjianNeural",
+      "locale": "zh-CN",
+      "gender": "Male",
+      "rate": "+22%",
+      "pitch": "+5Hz",
+      "description": "适合田径、竞速和比赛集锦，在最后一次反超时切入。",
+      "tags": [
+        "激情",
+        "普通话",
+        "男声",
+        "赛事",
+        "体育",
+        "冲刺"
+      ],
+      "sample_text": "最后一个弯道！他从外道追上来了，并肩了……压线！第一名！"
+    },
+    {
+      "id": "zh-stage-host-female",
+      "name": "舞台开场女声",
+      "voice": "zh-CN-XiaoyiNeural",
+      "locale": "zh-CN",
+      "gender": "Female",
+      "rate": "+12%",
+      "pitch": "+6Hz",
+      "description": "适合演出、发布会开场，介绍嘉宾时留出掌声的位置。",
+      "tags": [
+        "激情",
+        "普通话",
+        "女声",
+        "舞台",
+        "主持",
+        "开场"
+      ],
+      "sample_text": "后排的朋友，你们准备好了吗？灯光交给舞台。让我们欢迎，今晚的第一支乐队！"
+    },
+    {
+      "id": "zh-trailer-male",
+      "name": "热血预告男声",
+      "voice": "zh-CN-YunjianNeural",
+      "locale": "zh-CN",
+      "gender": "Male",
+      "rate": "-7%",
+      "pitch": "-5Hz",
+      "description": "适合逆转故事和预告片，用较低的声音慢慢蓄势，再落到一句短台词。",
+      "tags": [
+        "激情",
+        "普通话",
+        "男声",
+        "热血",
+        "预告",
+        "叙事"
+      ],
+      "sample_text": "我们落后一分。观众席上，没人肯坐下。最后一球，交给我！"
+    },
+    {
+      "id": "zh-rally-female",
+      "name": "赛前动员女声",
+      "voice": "zh-CN-XiaoxiaoNeural",
+      "locale": "zh-CN",
+      "gender": "Female",
+      "rate": "+5%",
+      "pitch": "+3Hz",
+      "description": "适合队长讲话和训练短片，节奏稍快，让鼓励听起来像在和队友说话。",
+      "tags": [
+        "激情",
+        "普通话",
+        "女声",
+        "运动",
+        "动员",
+        "鼓励"
+      ],
+      "sample_text": "还记得第一天训练吗？那时候，一圈都跑不完。看看今天的我们。来，一起上场！"
+    },
+    {
+      "id": "zh-esports-male",
+      "name": "电竞快评男声",
+      "voice": "zh-CN-YunxiNeural",
+      "locale": "zh-CN",
+      "gender": "Male",
+      "rate": "+18%",
+      "pitch": "+4Hz",
+      "description": "适合团战复盘和赛事切片，短句快速跟进连续发生的动作。",
+      "tags": [
+        "激情",
+        "普通话",
+        "男声",
+        "电竞",
+        "游戏",
+        "解说"
+      ],
+      "sample_text": "看小地图，他绕到后排了！控住两个，队友跟上！漂亮，这波配合太默契了！"
+    },
+    {
+      "id": "zh-countdown-male",
+      "name": "倒计时主持男声",
+      "voice": "zh-CN-YunyangNeural",
+      "locale": "zh-CN",
+      "gender": "Male",
+      "rate": "+9%",
+      "pitch": "+3Hz",
+      "description": "适合直播揭幕、倒计时和活动启动，清楚交代指令，再把节奏交给数字。",
+      "tags": [
+        "激情",
+        "普通话",
+        "男声",
+        "倒计时",
+        "主持",
+        "揭幕"
+      ],
+      "sample_text": "各位，请看大屏幕。跟我一起倒数！三，二，一！亮灯！"
+    },
+    {
+      "id": "zh-cheer-female",
+      "name": "现场助威女声",
+      "voice": "zh-CN-XiaoyiNeural",
+      "locale": "zh-CN",
+      "gender": "Female",
+      "rate": "+17%",
+      "pitch": "+8Hz",
+      "description": "适合球场看台、运动会领喊，用短口号给观众留出回应的空隙。",
+      "tags": [
+        "激情",
+        "普通话",
+        "女声",
+        "看台",
+        "助威",
+        "加油"
+      ],
+      "sample_text": "蓝队的朋友，把手举起来！左边，加油！右边，加油！最后一次，全场一起喊！"
+    },
+    {
+      "id": "yue-match-male",
+      "name": "粤语球评男声",
+      "voice": "zh-HK-WanLungNeural",
+      "locale": "zh-HK",
+      "gender": "Male",
+      "rate": "+16%",
+      "pitch": "+4Hz",
+      "description": "适合粤语足球集锦，跟球路连续报位，射门时收成短句。",
+      "tags": [
+        "激情",
+        "粤语",
+        "男声",
+        "球评",
+        "足球",
+        "赛事"
+      ],
+      "sample_text": "睇住右邊！好波，傳中！後柱無人睇實，頂入咗！全場都企起身喇！"
+    }
+  ]
+}

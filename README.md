@@ -42,6 +42,10 @@ Name the style in English or Chinese, or by its folder; the [style index](styles
 
 > Make a 40-second **LiDAR Survey** film about the old quarry in the hills behind our town, from public laser-scan data.
 
+### Choose a voice pack
+
+Choose a narration preset for book reading, documentary or lively explanation, or assign voices to individual characters. The catalog includes Mandarin, regional accents, Cantonese, Taiwan Mandarin and other languages, plus an audition page. Edge synthesis is online and needs no separate API key; presets combine a voice, rate and pitch. See the [voice pack guide](docs/VOICES.md).
+
 ### Install
 
 Clone this fork and register the skill for the current Codex user:

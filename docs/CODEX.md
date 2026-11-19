@@ -43,6 +43,10 @@ sh plugin/skills/lemo-opuscar/scripts/setup.sh deps music
 
 `voice` 包括本地语音模型与转写检查；中文 `edge-tts` 路径需要联网并把配音文本发送给相应服务。音色和配乐库的详细依赖见 [TECHNIQUE.md](../TECHNIQUE.md)。标 ✦ 的三个风格优先使用当前会话可用的生图工具；CLI 生图助手只是备用路径。
 
+## 语音包与角色配音
+
+可直接告诉 Codex“旁白用温柔慢速女声，主持人用青年男声”，或先生成试听页。用 `.venv/bin/python core/tts/tts_zh.py --list-presets` 查看本地目录；试听、角色配置、参数优先级与离线替代方案见[语音包指南](VOICES.md)。现有默认声音和 `lines.json` 输入保持兼容。
+
 ## 库路径和更新
 
 `setup.sh` 无参或 `check` 只检查，不联网更新、不安装依赖。查找顺序是：
