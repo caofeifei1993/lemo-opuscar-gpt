@@ -56,12 +56,37 @@ class SaveAssetTests(unittest.TestCase):
         self.assertEqual(Path(result["path"]), self.output.resolve())
         record = json.loads(self.output.with_suffix(".json").read_text())
         self.assertEqual(record["model"], "auto")
+        self.assertIsNone(record["actual_model"])
         self.assertEqual(record["sha256"], hashlib.sha256(self.output.read_bytes()).hexdigest())
         with Image.open(self.output) as image:
             self.assertEqual(image.getpixel((0, 0)), (12, 34, 56, 128))
         original_time = self.output.stat().st_mtime_ns
         self.assertEqual(self.run_cli(*command, data=data)["status"], "reused")
         self.assertEqual(self.output.stat().st_mtime_ns, original_time)
+
+    def test_native_import_rejects_an_unconfirmed_model_id(self):
+        self.run_cli(*self.args, "--model", "gpt-image-2-6-sunburst", "--stdin", data=self.image_bytes(), ok=False)
+        self.assertFalse(self.output.exists())
+        self.assertFalse(self.output.with_suffix(".json").exists())
+
+    def test_legacy_native_receipts_allow_reuse_and_repair(self):
+        data = self.image_bytes()
+        for model in ("auto", "historical-model"):
+            with self.subTest(model=model):
+                args = [*self.args, "--name", model, "--stdin"]
+                result = self.run_cli(*args, data=data)
+                receipt = Path(result["metadata"])
+                png = Path(result["path"])
+                old_record = dict(json.loads(receipt.read_text()), model=model)
+                old_record.pop("actual_model", None)
+                original = json.dumps(old_record)
+                receipt.write_text(original)
+                retry = args if model == "auto" else [*args, "--model", model]
+                self.assertEqual(self.run_cli(*retry, data=data)["status"], "reused")
+                png.unlink()
+                self.assertEqual(self.run_cli(*retry, data=data)["status"], "saved")
+                self.assertEqual(receipt.read_text(), original)
+                self.assertEqual(hashlib.sha256(png.read_bytes()).hexdigest(), old_record["sha256"])
 
     def test_openart_jpeg_import_and_expired_url_retry(self):
         source = self.project / "original"

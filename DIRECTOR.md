@@ -94,6 +94,38 @@ For the film review, render 6–9 key shots with the real drawing code, tiled in
 - **Design transitions inside the medium** (a page turn, a carved line growing, ink spreading), as one consistent grammar. Avoid default fades and hard cuts.
 - At key moments the subject fills at least a third of the frame height, with clear staging and a readable silhouette.
 
+### Camera moves for illustrated sequences
+
+For a sequence of full-frame illustrations, mark the subject's focal point on each plate (for example, the nearer eye), its intended screen position and its direction of travel in the shot list. Frame both sides of a continuity cut around that point. Generate enough space in the direction of motion for the planned crop. Use the style's cut or transition on the cue. A short dissolve suits a change of time or atmosphere when the silhouettes can overlap cleanly.
+
+In the film's Canvas page, load the opaque plates and drive the camera from the same absolute time as the renderer. This example moves from the wide view to the close-up at the four-second cue and keeps the eye near the left third. Draw titles and subtitles after the plates.
+
+```js
+import { createIllustratedSequence } from '/core/render/illustrated-sequence.js';
+
+const [wide, close] = await Promise.all(['wide.png', 'close.png'].map(async path => {
+  const image = new Image();
+  image.src = path;
+  await image.decode();
+  return image;
+}));
+
+const sequence = createIllustratedSequence([
+  { image: wide, duration: 4, anchor: [.35, .43],
+    from: { x: .37, y: .45, zoom: 1.08 }, to: { zoom: 1.16 } },
+  { image: close, duration: 3, anchor: [.35, .43], blendIn: .25,
+    from: { x: .38, y: .44, zoom: 1.10 }, to: { zoom: 1.15 } },
+]);
+window.DUR = sequence.duration;
+window.render = t => sequence.draw(ctx, t);
+window.render(0);
+window.READY = true;
+```
+
+`x` and `y` give the focus in normalized source-image coordinates. `anchor` sets its desired position in the viewport. The crop stops at the plate edge, so check whether the source has enough margin to place the eye where intended. Zoom starts at the scale needed to fill the viewport. `to` inherits settings from `from`; omit both for a held frame. Each shot's duration counts once toward the film. A positive `blendIn` starts at the incoming cue, keeps both cameras moving through the overlap and preserves the cue sheet's total duration. Omit it for a cut. Use `sequence.draw(ctx, t, width, height)` for a scaled context with logical canvas coordinates.
+
+Review the rendered frame immediately before each cut, the cut frame and the first frames after it at the delivery frame rate. Check the eye position, screen direction, motion speed and crop edges. If two faces ghost during a dissolve, align the poses or cut on the action. Preview a section at normal speed with its narration.
+
 ## 9. Performance
 
 - **Anticipation, action, follow-through** on every meaningful move. Characters change emotion. They do not just slide across the screen.

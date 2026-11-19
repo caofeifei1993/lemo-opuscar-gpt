@@ -67,6 +67,7 @@ See the [voice pack guide](../docs/VOICES.md) for the catalog and character-cast
 |---|---|
 | `core/lib.js` | seeded random `mulberry`, `hash`, `vnoise`, `clamp(x,a,b)`, `lerp(a,b,t)`, `seg(t,a,b)` (0→1 between a and b), easing on 0–1 (`ss(t)`, `eio(t)`, `eo(t)`, `ei(t)`, `back(t,s)`, `spring(t,k,z)`), `monotone`/`track` interpolation, envelope `env` |
 | `core/three/post.js` | three.js post: physical depth of field, GTAO, bloom, colour grade, 2× supersampling |
+| `core/render/illustrated-sequence.js` | frame opaque illustrated plates around a subject, animate the crop and time cuts or dissolves to the film clock ([camera example](../DIRECTOR.md#camera-moves-for-illustrated-sequences)) |
 | `core/post/crt.js` | WebGL2 CRT / VHS pass over a 2D canvas |
 | `core/fonts/` | Fredoka, Lilita One, IM Fell English, ZCOOL KuaiLe (OFL, [`fonts/OFL.md`](fonts/OFL.md)) as subsets; ZCOOL holds only ≈ 200 characters |
 | `core/assets/polyhaven/` | CC0 HDRIs and models (`SOURCES.md`) |
@@ -79,11 +80,12 @@ The ✦ styles use generated characters, props or panels. In a Codex session cho
 |---|---|
 | `python3 core/image/image_route.py configure PROJECT --kind illustration --provider native` | save the illustration choice for this film. Use `--kind storyboard` for concept panels or `--kind both` to share a choice |
 | `python3 core/image/image_route.py configure PROJECT --kind storyboard --provider openart --model MODEL_ID` | use the exact model ID returned by the current OpenArt image catalog |
+| `.venv/bin/python core/image/image_route.py character PROJECT --id ID --description "stable features" --ref IMAGE` | register a per-film master reference for later native shots with `plan --character ID` |
 | `python3 core/image/image_route.py plan PROJECT --kind storyboard --name shot-01 --prompt "Wide shot of a café at dawn" --aspect 16:9` | resolve the choice and prepare a generation request |
 | `python3 core/image/gen_image.py --check` | is the Codex CLI installed and signed in? Exit 0 if so, 4 if not, with a different message for "not installed" and "not signed in". The first real image confirms that the account can generate images |
 | `python3 core/image/gen_image.py "<prompt>" --aspect 16:9 --out "<project>/gen" --name <base> [--ref <image> …] [--edit]` | one image through `codex exec` (read-only sandbox, its built-in `image_gen`) → `<project>/gen/<base>_<date-time>.png`, path printed. `--ref` attaches a reference sheet (repeatable); `--edit` changes the first `--ref` and keeps the rest of it. A wrong aspect is retried, then kept as `…_wrongaspect.png`. Exit 2 no image, 3 wrong aspect, 4 setup (no Codex, a missing reference, a bad argument) |
 
-Native model selection is automatic. OpenArt uses the connected workspace's current image catalog and model-specific form. Check the exact model, generation mode and credits before submitting a job. On a missing provider, unsupported reference, insufficient balance or failure, keep the user's selection and report the available options. The signed-in Codex CLI helper above remains an optional native route. A style can also use suitable drawings supplied by the user. Include the planned images and their number in the brief.
+New films record GPT Image 2.6 Sunburst as the native model preference. Native model selection is automatic and the host does not identify the model in the result. OpenArt uses the connected workspace's current image catalog and model-specific form. Check the exact model, generation mode and credits before submitting a job. On a missing provider, unsupported reference, insufficient balance or failure, keep the user's selection and report the available options. The signed-in Codex CLI helper above remains an optional native route. A style can also use suitable drawings supplied by the user. Include the planned images and their number in the brief.
 
 ## Environment variables
 

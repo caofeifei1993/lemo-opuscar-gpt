@@ -156,6 +156,15 @@ def save(args):
     png, receipt = target_paths(project, args.kind, args.name)
     identity = {"schema_version": 1, "kind": args.kind, "provider": args.provider,
                 "model": args.model or "auto", "path": png.relative_to(project).as_posix()}
+    if args.provider == "native":
+        previous = read_receipt(receipt) if receipt.exists() else None
+        if args.model not in (None, "auto") and not (
+                previous and previous.get("provider") == "native" and previous.get("model") == args.model):
+            raise ValueError("ChatGPT native does not report a model ID; new receipts use native/auto")
+        # Keep original receipts byte-compatible on retries. New receipts explicitly
+        # distinguish the host's routing choice ("auto") from its undisclosed model.
+        if previous is None or "actual_model" in previous:
+            identity["actual_model"] = None
     if args.history_id:
         identity["history_id"] = args.history_id
     if args.resource_id:

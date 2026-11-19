@@ -25,6 +25,34 @@ class ImageRouteTests(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stderr)
         return json.loads(r.stdout)
 
+    def test_sunburst_preference_is_separate_from_the_native_call(self):
+        for kind in ("illustration", "storyboard"):
+            plan = self.run_cli("plan", "--kind", kind, "--name", "shot", "--prompt", "A fox")
+            self.assertEqual(plan["preferred_model"], "GPT Image 2.6 Sunburst")
+            self.assertEqual((plan["provider"], plan["model"]), ("native", "auto"))
+            self.assertEqual(plan["call"], {"toolName": "image_gen.imagegen",
+                                           "arguments": {"prompt": "A fox", "transparent_background": False}})
+        self.run_cli("configure", "--kind", "illustration", "--provider", "native", "--model", "auto")
+        self.assertNotIn("preferred_model", self.run_cli("show")["illustration"])
+        self.run_cli("configure", "--kind", "illustration", "--provider", "native", "--prefer-model", "My preference")
+        self.assertEqual(self.run_cli("show")["illustration"]["preferred_model"], "My preference")
+        self.run_cli("configure", "--kind", "both", "--provider", "openart", "--model", "sample-model",
+                     "--prefer-model", "My preference", fail=True)
+
+    def test_legacy_plan_retry_keeps_original_provenance(self):
+        args = ("--kind", "storyboard", "--name", "shot", "--prompt", "A fox", "--save")
+        plan = self.run_cli("plan", *args)
+        del plan["preferred_model"]
+        path = self.project / ".image-jobs/storyboard/shot/plan.json"
+        path.write_text(json.dumps(plan))
+        self.assertEqual(self.run_cli("plan", *args), plan)
+        self.assertEqual(json.loads(path.read_text()), plan)
+        self.run_cli("plan", *args, "--aspect", "16:9", fail=True)
+        config = {"version": 1, "illustration": {"provider": "native", "model": "auto"},
+                  "storyboard": {"provider": "openart", "model": "sample-model"}}
+        (self.project / "image-providers.json").write_text(json.dumps(config))
+        self.assertEqual(self.run_cli("show"), config)
+
     def test_separate_routes_and_reusable_native_references(self):
         self.run_cli("configure", "--kind", "storyboard", "--provider", "openart", "--model", "sample-model")
         img = self.project / "reference.jpg"

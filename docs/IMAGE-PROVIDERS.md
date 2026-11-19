@@ -1,10 +1,12 @@
 # 为插画和分镜选生图工具
 
-在 Codex 制作视频时，可以直接说：
+新影片的插画和分镜默认使用 **ChatGPT 原生生图**，模型偏好是 **GPT Image 2.6 Sunburst**。当前 Codex 原生工具自动选择底层模型。即使工具没有披露型号，影片也会直接继续生成。计划里的 `preferred_model` 保存偏好，新素材回执里的 `actual_model: null` 表示实际型号未知。中文素材清单写作“ChatGPT 原生生图（实际型号未知）”。
+
+需要为一部影片单独选择时，可以这样说。
 
 > 分镜用 ChatGPT 原生生图。成片插画用 OpenArt 的 Seedream 5.5，横屏，三张图的主角要保持一致。
 
-也可以说“先列出我在 OpenArt 能用的插画模型”或“两种都用原生”。Codex 在制片简报里记录选择。插画与概念分镜可以各选一种，每支影片独立保存。**ChatGPT 原生**调用当前会话的图像工具，具体模型由宿主自动选择。**OpenArt**可点名模型；Codex 从当前工作区的实时目录核对模型、参考图支持与积分。只有确定要生成的素材才需要选工具。精准图表和正式渲染帧继续走原项目的绘制流程。
+也可以说“先列出我在 OpenArt 能用的插画模型”。每支影片独立保存插画和分镜的选择。选用 **OpenArt** 时，Codex 从当前工作区的实时目录核对模型、参考图支持与积分。精准图表和正式渲染帧继续走原项目的绘制流程。
 
 ## 在影片中保存选择
 
@@ -16,7 +18,7 @@ python3 core/image/image_route.py configure films/harbor --kind illustration --p
 python3 core/image/image_route.py show films/harbor
 ```
 
-用 `--kind both` 可以一次指定两种用途。文件 `image-providers.json` 存在影片目录，后续制作或修改可沿用；缺省为原生自动。用户已点名的模型无法使用时，说明原因，让用户选替代方案。首次存储 OpenArt 首选项时尽量保存实时目录的精确 ID。
+用 `--kind both` 可以一次指定两种用途。影片目录里的 `image-providers.json` 保存该片的明确选择，优先于新片默认值。原生路线可用 `--prefer-model 'GPT Image 2.6 Sunburst'` 写入偏好，也可用 `--model auto` 显式选择无型号偏好的原生路线。OpenArt 的配置使用实时目录中的精确 ID。
 
 ## 从计划到素材
 
@@ -38,6 +40,22 @@ python3 core/image/image_route.py plan films/harbor --kind storyboard --name sho
 .venv/bin/python core/image/save_asset.py films/harbor --kind storyboard --name shot-01 \
   --provider native --aspect 16:9 --file '/path/to/returned-image.png'
 ```
+
+### 让角色跨镜头保持一致
+
+先选一张能看清脸型、服装和身体比例的定妆图。可以用自己的图，或用原生生图生成一张并导入影片。例如，要让同一个小王子从远景切到近景，可以这样登记并引用他。
+
+```sh
+.venv/bin/python core/image/image_route.py character films/harbor --id prince \
+  --description '浅金短卷发，绿色短外套，长黄围巾，孩子身形' \
+  --ref assets/illustrations/prince-sheet.png
+python3 core/image/image_route.py plan films/harbor --kind storyboard --name prince-wide \
+  --character prince --aspect 16:9 --prompt '远景，小王子站在画面左侧，面朝右方的玫瑰。' --save
+```
+
+原生插画和分镜共用 `assets/characters/` 中的定妆图。在每个有该角色的镜头加上 `--character prince`；多人同框时按提示词的角色顺序重复此参数。计划会按次序附上真实图片和外观描述。派发前查看参考图，并从 `status` 读取校验后的调用参数。审片时把新镜头与定妆图并排检查脸型、服装和比例，视线和动作方向则对照上一镜。需要另一种造型时登记新 ID。OpenArt 镜头使用下一节的宿主参考图流程。
+
+全屏插画的推拉、构图锚点和剪辑点设置见[导演指南的插画运镜示例](../DIRECTOR.md#camera-moves-for-illustrated-sequences)。
 
 ### OpenArt
 

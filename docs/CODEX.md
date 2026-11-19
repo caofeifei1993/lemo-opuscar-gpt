@@ -45,7 +45,7 @@ sh plugin/skills/lemo-opuscar/scripts/setup.sh deps music
 
 ## 选择插画和分镜的模型
 
-标 ✦ 的风格需要插画素材。制片时可以直接说“分镜用 ChatGPT 原生生图，成片插画用 OpenArt 的 Seedream 5.5”。Codex 会查询当前可用的 OpenArt 模型，并分别保存这部片子的插画和分镜选择。原生生图由系统选择底层模型。详见[插画与分镜的模型选择](IMAGE-PROVIDERS.md)。
+新片的插画和分镜默认走 ChatGPT 原生生图，记录的模型偏好为 GPT Image 2.6 Sunburst。当前原生工具由宿主自动选型，实际型号未知。要让同一角色跨镜头保持一致，可以说“分镜和成片都沿用这张角色定妆图”。每部片也可以为两种用途分别指定生图入口。详见[插画与分镜的模型选择](IMAGE-PROVIDERS.md)。
 
 ## 语音包与角色配音
 
