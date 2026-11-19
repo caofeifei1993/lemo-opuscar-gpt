@@ -73,18 +73,17 @@ See the [voice pack guide](../docs/VOICES.md) for the catalog and character-cast
 
 ## Image generation
 
-The styles marked ✦ in the style list (`"needs": ["image-generation"]` in their `style.json`) draw their characters, props or panels with an image generator. The library has none of its own: the user brings one.
+The ✦ styles use generated characters, props or panels. In a Codex session choose ChatGPT native or an OpenArt model, independently for film illustrations and generated storyboard panels. The route helper prepares the host call. After the host generates the image, the save helper validates and imports it. Instructions and examples are in [Image providers](../docs/IMAGE-PROVIDERS.md).
 
 | Command | What it does |
 |---|---|
+| `python3 core/image/image_route.py configure PROJECT --kind illustration --provider native` | save the illustration choice for this film. Use `--kind storyboard` for concept panels or `--kind both` to share a choice |
+| `python3 core/image/image_route.py configure PROJECT --kind storyboard --provider openart --model MODEL_ID` | use the exact model ID returned by the current OpenArt image catalog |
+| `python3 core/image/image_route.py plan PROJECT --kind storyboard --name shot-01 --prompt "Wide shot of a café at dawn" --aspect 16:9` | resolve the choice and prepare a generation request |
 | `python3 core/image/gen_image.py --check` | is the Codex CLI installed and signed in? Exit 0 if so, 4 if not, with a different message for "not installed" and "not signed in". The first real image confirms that the account can generate images |
 | `python3 core/image/gen_image.py "<prompt>" --aspect 16:9 --out "<project>/gen" --name <base> [--ref <image> …] [--edit]` | one image through `codex exec` (read-only sandbox, its built-in `image_gen`) → `<project>/gen/<base>_<date-time>.png`, path printed. `--ref` attaches a reference sheet (repeatable); `--edit` changes the first `--ref` and keeps the rest of it. A wrong aspect is retried, then kept as `…_wrongaspect.png`. Exit 2 no image, 3 wrong aspect, 4 setup (no Codex, a missing reference, a bad argument) |
 
-- **Native Codex image tool**: prefer an image tool already available in the current session, following its skill. Save the generated assets under the names the style expects. The CLI check below is not required for this route.
-- **Codex CLI (optional fallback)**: installed, and signed in (`codex login`) to an account that can generate images. A failed generation prints Codex's own error (no credits, no access).
-- **Another image tool** (an image API or app, or the user's own drawings): the style's `STYLE.md` gives the prompts, sizes and file names; the user makes the images there and saves them under those names.
-- **Neither**: a film in that style cannot start. Say so in the brief and offer other styles that fit the topic; never draw stand-in characters in code.
-- Prompts and reference images go to the image service the user chose. Before generating, tell the user how many images and of what.
+Native model selection is automatic. OpenArt uses the connected workspace's current image catalog and model-specific form. Check the exact model, generation mode and credits before submitting a job. On a missing provider, unsupported reference, insufficient balance or failure, keep the user's selection and report the available options. The signed-in Codex CLI helper above remains an optional native route. A style can also use suitable drawings supplied by the user. Include the planned images and their number in the brief.
 
 ## Environment variables
 

@@ -41,7 +41,11 @@ sh plugin/skills/lemo-opuscar/scripts/setup.sh deps voice
 sh plugin/skills/lemo-opuscar/scripts/setup.sh deps music
 ```
 
-`voice` 包括本地语音模型与转写检查；中文 `edge-tts` 路径需要联网并把配音文本发送给相应服务。音色和配乐库的详细依赖见 [TECHNIQUE.md](../TECHNIQUE.md)。标 ✦ 的三个风格优先使用当前会话可用的生图工具；CLI 生图助手只是备用路径。
+`voice` 包括本地语音模型与转写检查；中文 `edge-tts` 路径需要联网并把配音文本发送给相应服务。音色和配乐库的详细依赖见 [TECHNIQUE.md](../TECHNIQUE.md)。
+
+## 选择插画和分镜的模型
+
+标 ✦ 的风格需要插画素材。制片时可以直接说“分镜用 ChatGPT 原生生图，成片插画用 OpenArt 的 Seedream 5.5”。Codex 会查询当前可用的 OpenArt 模型，并分别保存这部片子的插画和分镜选择。原生生图由系统选择底层模型。详见[插画与分镜的模型选择](IMAGE-PROVIDERS.md)。
 
 ## 语音包与角色配音
 

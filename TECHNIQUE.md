@@ -28,7 +28,7 @@ Everything else installs in tiers, from the library root (`$LIB` in skill mode).
 
 Some styles need packages of their own (a LiDAR reader, a slide-scan decoder, a CAD importer); the style's `STYLE.md` lists them. They are packages, not system tools: install them yourself into a private venv or `node_modules` in the project folder, never into `$LIB/.venv`.
 
-The styles marked ✦ also draw with an image generator, which the library doesn't include and you don't install: an available native Codex image tool (preferred), the optional signed-in Codex CLI helper (`core/image/gen_image.py`), or another image tool they have. Their prompts go to that service (core/README.md, "Image generation").
+Styles marked ✦ need image assets. In Codex the film can use ChatGPT native or a selected OpenArt model for illustrations and choose a different route for storyboard panels. Record each choice in the film with `core/image/image_route.py configure`. The host calls the provider and saves each verified result in the project. Prompts and supplied references go to the selected service. See [Image providers](docs/IMAGE-PROVIDERS.md).
 
 A synthesized score needs no big download. A sampled one needs the libraries its instruments live in: `sampler.py` downloads the missing ones itself, all at once, when the score is rendered (`LEMO_FETCH=0` turns that off and prints the `fetch.sh` commands instead). Put `"$LIB/.venv/bin/python" core/audio/sampler.py --need <your mix.py>` at the top of a `build.sh`, so they arrive before the long picture render, not after it. A pack needs about twice its size free while it unpacks. Downloads come from npm, PyPI, GitHub Releases and Hugging Face (`HF_ENDPOINT` sets a mirror).
 
@@ -146,7 +146,7 @@ Write an original score from the cue map, in the instruments of the style's soun
 
 ## 11. Assets, credits and fonts
 
-Only CC0, CC BY or OFL material, each listed in the film's `CREDITS` with its source and licence; `core/audio/sampler.py credits(names)` writes the lines for the instruments you used. Public-domain works count as CC0; "no known restrictions" does not. Data or images under other open licences (ODbL, CC BY-SA, open-hardware licences) only after you have named the licence and its terms (attribution, share-alike) to the user and they agree. The user's own material is fine as it is. Images from an image generator (the ✦ styles) are listed too: which tool and model made them, that they are generated, and where the prompts are kept; drawings the user made are credited to them.
+Only CC0, CC BY or OFL material, each listed in the film's `CREDITS` with its source and licence; `core/audio/sampler.py credits(names)` writes the lines for the instruments you used. Public-domain works count as CC0; "no known restrictions" does not. Data or images under other open licences (ODbL, CC BY-SA, open-hardware licences) only after you have named the licence and its terms (attribution, share-alike) to the user and they agree. The user's own material is fine as it is. List generated images too, including illustrations and any delivered storyboard panels. Record the provider, the model if exposed (otherwise “native/auto”), and where the prompts are kept; drawings the user made are credited to them.
 
 A film that states facts (a style built from real data or scans: its `STYLE.md` says so) keeps a `FACTS.md` in the project folder: each claim with its source URL and the quoted wording, or the measurement that produced it.
 

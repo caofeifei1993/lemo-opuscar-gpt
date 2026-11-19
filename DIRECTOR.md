@@ -63,7 +63,9 @@ Render them with the real drawing code, not a mock-up, and check them yourself a
 
 ### The storyboard (only if the user asked for one)
 
-Render 6–9 key shots with the real drawing code, tiled into one sheet (`core/render/sheet.py`) with shot number, framing, duration and line under each. Send it with the logline and what you are least sure about, and **wait for approval**. If the user didn't ask for one, don't stop.
+For a generated concept storyboard, use the film's storyboard provider and model, carry character and palette references across panels, and label the result **concept storyboard**. When the request is for concepts alone, deliver those panels with shot numbers and framing. When the user wants to review how the film itself will look, use the film's real render for that review.
+
+For the film review, render 6–9 key shots with the real drawing code, tiled into one sheet (`core/render/sheet.py`) with shot number, framing, duration and line under each. Send it with the logline and what you are least sure about, and **wait for approval**. If the user didn't ask for one, don't stop.
 
 ## 6. Sound is half the film
 

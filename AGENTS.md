@@ -68,7 +68,7 @@ All 99 styles · 全部风格:
 - **仪器实证 Instruments & Evidence** (8): 卫星简报 Satellite Briefing, 工程简报板 Engineering Briefing Board, 点云测绘 LiDAR Survey, 显微镜下 Under the Microscope, 档案看片台 Archive Light Table, 安检 X 光 Security X-ray, 雷达扫描纪录片 Radar Sweep Documentary, 热成像 Thermal Camera
 - **数据地图 Data & Maps** (6): 数据叙事 Data Storytelling, 白模投影 Projection-Mapped Model, 数据实物化 Data Physicalization, 地铁线路图 Transit Map, 立体地图解说 3D Map Explainer, 小人模拟实验 Blob Simulation
 
-✦ draws with an image generator: an available native image tool, the user's Codex CLI, or another image tool they have. Without one the film cannot start (core/README.md, "Image generation"). Say so when you suggest the style.
+✦ uses generated illustrations or supplied drawings. For image generation, offer ChatGPT native or a connected OpenArt model. See [Image providers](docs/IMAGE-PROVIDERS.md).
 <!-- style-list:end -->
 
 ## Workflow
@@ -79,11 +79,9 @@ All 99 styles · 全部风格:
    - the film's language, if it isn't obvious (default: the language they write in or chose, for voice and subtitles);
    - whether they want to review a storyboard first (default: no);
    - anything missing on their machine: before you ask, run `sh plugin/skills/lemo-opuscar/scripts/setup.sh` from the library root (no arguments: it takes seconds and lists every missing system tool at once) and include what it reports. Start `… setup.sh deps` (core only) in the background, if it isn't already running: it takes a few minutes the first time. Add the voice and music tiers later, only if the film needs them (TECHNIQUE.md §1);
-   - for a style marked ✦, how they will make the images, but only when no usable image tool is available.
+   - when the film needs generated illustrations (including ✦ styles) or the user wants generated storyboard panels, settle the provider choice in this same brief. Use the user's explicit choice first, then any saved choice for that asset type. Where a choice is open, offer ChatGPT native or specific image models from the connected OpenArt catalog. For a delegated choice use native when available. A film with code-drawn shots alone needs no image-provider question.
 
-   **A style marked ✦ draws with an image generator** (its `style.json` says `"needs": ["image-generation"]`). Prefer an image tool already available in the current Codex session, following its skill and saving usable image assets into the project. If none is available, run `python3 core/image/gen_image.py --check` from the library root to check the optional CLI route. A missing CLI does not block a working native image tool. If neither works, ask which other image tool or supplied drawings to use. With no image generator or supplied drawings, offer two or three other styles; never draw the characters in code as a stand-in.
-
-   CLI image commands in a `STYLE.md` describe one way to obtain assets, not a required transport. A native image tool can replace that call while preserving the style's prompts, reference consistency, image dimensions, expected filenames and visual requirements.
+   Illustrations and storyboard panels can use different providers. Save explicit choices in the film's `image-providers.json` via `core/image/image_route.py configure`. Follow [Image providers](docs/IMAGE-PROVIDERS.md) to resolve the OpenArt model ID, check its mode and cost, generate, and save the resulting image. If a chosen route is unavailable, report the reason and offer alternatives. Never silently switch models. A CLI command in a style guide describes one transport; use the selected host provider for that step. For ✦ styles, keep the references, dimensions and filenames required by `STYLE.md`. If no generator or suitable drawings are available, offer another style rather than substituting code-drawn characters.
 
    Skip what their request already answers. Ask only for information needed to proceed; otherwise state sensible defaults, sum up the brief in a few lines and start. Wait for required answers, but do not insert an extra approval gate when the user already authorized the film. Don't come back with redundant questions.
 2. **Treatment.** Write `TREATMENT.md` in the project folder (DIRECTOR.md §4), before you open the demo (an Edit & Documentary style gathers its material first: **Treatment first** above).

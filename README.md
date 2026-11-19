@@ -94,7 +94,7 @@ Every film is directed, drawn, scored and mixed by the agent writing code: 🎨 
 
 - A film takes an agent about 30–60 minutes and a fair amount of tokens.
 - You need Node 20+, ffmpeg 7+ and Python 3.11+ (or [uv](https://docs.astral.sh/uv/)); the agent installs the rest. Ubuntu 24.04 ships ffmpeg 6.1, which is too old: use a [static build](https://johnvansickle.com/ffmpeg/).
-- Three styles draw their characters with an image generator you bring (Manga Panels, Text Flash Cuts, Comic History Cartoon; marked ✦ in [the style list](styles/README.md)): the [Codex CLI](https://github.com/openai/codex) signed in to an account that can generate images, or another image tool you have. Without one, those three can't start; every other style works without it.
+- For illustrated assets or generated storyboard panels, choose ChatGPT native or an image model from your connected OpenArt catalog. For example: “Use ChatGPT native for storyboard panels and OpenArt’s Seedream 5.5 for the illustrations.” The ✦ styles in [the style list](styles/README.md) require illustrated assets. See [Image provider selection](docs/IMAGE-PROVIDERS.md).
 - Default output 1920×1080 at 24 fps (some styles set their own frame rate, such as 30 fps); other sizes on request.
 
 ## Make a style your own

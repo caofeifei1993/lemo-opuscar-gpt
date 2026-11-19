@@ -92,7 +92,7 @@ sh plugin/skills/lemo-opuscar/scripts/setup.sh deps
 
 - 一支片子 agent 大约要做 30–60 分钟，token 用量不小。
 - 需要 Node 20+、ffmpeg 7+ 和 Python 3.11+（或 [uv](https://docs.astral.sh/uv/)），其余由 agent 安装。Ubuntu 24.04 自带的 ffmpeg 是 6.1，版本太旧，请换成[静态版](https://johnvansickle.com/ffmpeg/)。
-- 有三个风格的人物要用生图工具画，需要你自己提供（黑白漫画分格、文字闪切、搞笑历史卡通，在[风格清单](styles/README.md)里标 ✦）：登录了能生图账号的 [Codex CLI](https://github.com/openai/codex)，或者你手上别的生图工具。没有的话这三个风格没法开始；其余风格都用不到。
+- 在 Codex 里可以说：“分镜用 ChatGPT 原生生图，成片插画用 OpenArt 的 Seedream 5.5。”两种用途可以分开选，也可以共用一个模型。OpenArt 的可选模型以当前账户的实时目录为准。[风格清单](styles/README.md)中标 ✦ 的风格需要插画素材。详见[生图模型选择指南](docs/IMAGE-PROVIDERS.md)。
 - 默认输出 1920×1080、24 fps（有些风格自带帧率，比如 30 fps），其他尺寸可以指定。
 
 ## 改成你自己的风格
